@@ -1,0 +1,477 @@
+إليك كود الـ **HTML** الكامل المدمج معه تنسيقات **CSS** متطورة وجذابة، وبرمجة **JavaScript** تفاعلية لتحويل ملف الـ JSON الخاص بالاختبار الشامل لإدارة الأعمال إلى صفحة ويب مميزة ومستجيبة تمامًا.
+
+تتميز هذه الصفحة بالتالي:
+
+1. **تصميم تفاعلي ومستجيب (Responsive)** يناسب شاشات الهواتف والحواسب.
+2. **عدم كشف الإجابات** أثناء الحل، مع إمكانية تحديد الإجابات وتغييرها بحرية.
+3. **تصحيح تلقائي فوري** عند الضغط على زر "إنهاء الاختبار وعرض النتيجة".
+4. **عرض التفاصيل التعليمية الكاملة:** تظهر الإجابات الصحيحة متميزة باللون الأخضر، ويظهر صندوق خاص تحت كل سؤال يحتوي على **"التفسير العلمي والأكاديمي للحل ومصدره من المحاضرات"**، بالإضافة إلى حساب النتيجة الكلية والنسبة المئوية بدقة في الأعلى.
+
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار الشامل في مقرر إدارة الأعمال</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #2980b9;
+            --bg-color: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-color: #2f3640;
+            --correct-color: #2ecc71;
+            --incorrect-color: #e74c3c;
+            --explanation-bg: #e8f4f8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 1rem;
+            white-space: pre-line;
+            opacity: 0.9;
+        }
+
+        .result-box {
+            display: none;
+            background-color: var(--correct-color);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            display: inline-block;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+            display: inline;
+        }
+
+        .question-header {
+            margin-bottom: 15px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #edeff1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-label:hover {
+            background-color: #f1f2f6;
+            border-color: #dcdde1;
+        }
+
+        .option-label input {
+            margin-left: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        /* تنسيقات التصحيح التلقائي */
+        .option-label.correct {
+            background-color: rgba(46, 204, 113, 0.15) !important;
+            border-color: var(--correct-color) !important;
+            color: #1e7e34;
+            font-weight: bold;
+        }
+
+        .option-label.incorrect {
+            background-color: rgba(231, 76, 60, 0.1) !important;
+            border-color: var(--incorrect-color) !important;
+            color: #bd2130;
+        }
+
+        .explanation-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--explanation-bg);
+            border-right: 4px solid var(--accent-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            header { padding: 20px; }
+            header h1 { font-size: 1.5rem; }
+            .question-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 id="quiz-title"></h1>
+        <p id="quiz-desc"></p>
+    </header>
+
+    <div id="result-screen" class="result-box"></div>
+
+    <form id="quiz-form">
+        <div id="questions-container"></div>
+        <button type="button" class="submit-btn" id="submit-button" onclick="evaluateQuiz()">إنهاء الاختبار وعرض النتيجة</button>
+    </form>
+</div>
+
+<script>
+    // بيانات الـ JSON التي قمت بتوفيرها
+    const quizData = {
+      "title": "الاختبار الشامل في مقرر إدارة الأعمال (10 محاضرات)",
+      "description": "جامعة الفيوم - كلية العلوم\nامتحان الفصل الدراسي الثاني - الفرقة الثانية (جميع الشعب)\nمقرر: إدارة الأعمال\nإعداد وتحكيم أكاديمي بناءً على نمط امتحانات أ.د/ محمد سعيد أبو الغار و أ.د/ أحمد روبي.\nالزمن: ساعتان | الدرجة الكلية: 30 درجة.",
+      "questions": [
+        {
+          "question": "عملية اختيار أفضل حل أو خيار من بين بدائل متعددة لتحقيق أهداف المنظمة تُعرف بـ:",
+          "type": "multiple_choice",
+          "options": ["التوجيه", "اتخاذ القرار", "التنظيم الإداري", "الرقابة الوقائية"],
+          "answer": "اتخاذ القرار",
+          "explanation": "وفقاً للمحاضرة العاشرة، اتخاذ القرار (Decision Making) هو عملية اختيار أفضل حل أو خيار من بين بدائل متعددة لتحقيق أهداف المنظمة."
+        },
+        {
+          "question": "القرارات التي تكون متكررة وقابلة للتكرار بسهولة بناءً على قواعد محددة سلفاً تسمى:",
+          "type": "multiple_choice",
+          "options": ["قرارات استراتيجية", "قرارات غير روتينية", "قرارات روتينية", "قرارات أزموية"],
+          "answer": "قرارات روتينية",
+          "explanation": "القرارات الروتينية (Programmed Decisions) هي قرارات متكررة وقابلة للتكرار بسهولة داخل بيئة العمل (المحاضرة 10)."
+        },
+        {
+          "question": "العملية التي تهدف إلى جذب، تطوير، وتحفيز الموظفين لتحقيق أهداف المنظمة هي:",
+          "type": "multiple_choice",
+          "options": ["الاتصال الإداري", "القيادة الموقفية", "إدارة الموارد البشرية", "التخطيط التكتيكي"],
+          "answer": "إدارة الموارد البشرية",
+          "explanation": "إدارة الموارد البشرية (HRM) هي العملية التي تهدف إلى جذب وتطوير وتحفيز الموظفين لتحقيق أهداف المنظمة (المحاضرة 8)."
+        },
+        {
+          "question": "عندما يتدفق الاتصال من المرؤوسين إلى الرؤساء ليشمل التقارير والمقترحات والشكاوى، فإنه يسمى:",
+          "type": "multiple_choice",
+          "options": ["اتصال هابط", "اتصال صاعد", "اتصال أفقي", "اتصال مصفوفي"],
+          "answer": "اتصال صاعد",
+          "explanation": "الاتصال الصاعد يتدفق من المرؤوسين إلى الرؤساء ويشمل التقارير، المقترحات، والشكاوى والملاحظات (المحاضرة 7)."
+        },
+        {
+          "question": "أي من الهياكل التنظيمية التالية يجمع بين الهيكل الوظيفي والهيكل التقسيمي ويتميز بمرونة عالية ولكنه قد يسبب تضارباً في السلطة؟",
+          "type": "multiple_choice",
+          "options": ["الهيكل البسيط", "الهيكل المصفوفي", "الهيكل القطاعي", "الهيكل التقليدي"],
+          "answer": "الهيكل المصفوفي",
+          "explanation": "الهيكل المصفوفي يجمع بين الهيكل الوظيفي والتقسيمي، ويتميز بمرونة عالية ولكنه قد يسبب ازدواجية أو تضارباً في السلطة (المحاضرة 4)."
+        },
+        {
+          "question": "يغطي التخطيط الاستراتيجي في المنظمات عادةً فترة زمنية تسمى بالمدى البمني الممتد، وهو:",
+          "type": "multiple_choice",
+          "options": ["قصير الأجل (أقل من سنة)", "متوسط الأجل (من سنة إلى 5 سنوات)", "طويل الأجل (5 سنوات فأكثر)", "تشغيلي يومي"],
+          "answer": "طويل الأجل (5 سنوات فأكثر)",
+          "explanation": "التخطيط الاستراتيجي هو مسؤولية الإدارة العليا وهو تخطيط طويل الأجل يغطي فترة زمنية مدتها 5 سنوات فأكثر (المحاضرة 3)."
+        },
+        {
+          "question": "العوامل الاقتصادية والاجتماعية والسياسية والتكنولوجية تقع ضمن نطاق:",
+          "type": "multiple_choice",
+          "options": ["البيئة الداخلية للمنظمة", "البيئة الخارجية العامة", "البيئة الخارجية الخاصة", "الهيكل الثقافي للمنظمة"],
+          "answer": "البيئة الخارجية العامة",
+          "explanation": "تشمل البيئة الخارجية العامة العوامل الاقتصادية، الاجتماعية، السياسية والقانونية، التكنولوجية، والبيئية (المحاضرة 2)."
+        },
+        {
+          "question": "أي من الآتي يعتبر مقياساً لمدى نجاح المؤسسة في الوصول إلى أهدافها الاستراتيجية والتركيز على النتائج بغض النظر عن الموارد؟",
+          "type": "multiple_choice",
+          "options": ["الكفاءة", "الأتمتة", "الفعالية", "التنظيم"],
+          "answer": "الفعالية",
+          "explanation": "الفعالية تركز على النتائج ومدى تحقيق الأهداف المرجوة بغض النظر عن الموارد المستخدمة، على عكس الكفاءة التي تركز على الموارد والوسائل وتقليل الهدر (المحاضرة 1)."
+        },
+        {
+          "question": "تركيز الإدارة الناجحة على توظيف البرمجيات، والأنظمة الرقمية، والذكاء الاصطناعي لتحسين كفاءة العمليات يسمى:",
+          "type": "multiple_choice",
+          "options": ["الرقابة التقليدية", "الأتمتة", "المركزية الإدارية", "التخطيط التكتيكي"],
+          "answer": "الأتمتة",
+          "explanation": "الأتمتة هي توظيف البرمجيات والأنظمة الرقمية والذكاء الاصطناعي لتحسين كفاءة العمليات وتقليل الأخطاء وزيادة السرعة والدقة (المحاضرة 2)."
+        },
+        {
+          "question": "في نظرية (X) و (Y) لماكغريغور، تفترض نظرية Y أن الإنسان:",
+          "type": "multiple_choice",
+          "options": ["كسول بطبعه ويحب الرقابة اللصيقة", "قادر على تحمل المسؤولية ويحب العمل", "يهتم فقط بالحوافز المادية الصرفة", "يتجنب اتخاذ القرارات بشتى الطرق"],
+          "answer": "قادر على تحمل المسؤولية ويحب العمل",
+          "explanation": "تفترض نظرية Y أن الإنسان يحب العمل وقادر على تحمل المسؤولية، عكس نظرية X تماماً (المحاضرة 6)."
+        },
+        {
+          "question": "تعتبر الرواتب والمكافآت والعلاوات والامتيازات المالية من الحوافز المعنوية في بيئة العمل.",
+          "type": "true_false",
+          "answer": false,
+          "explanation": "خطأ، الرواتب والمكافآت والعلاوات تصنف كحوافز مادية، بينما تشمل الحوافز المعنوية التقدير والثناء، الترقي، والمشاركة في اتخاذ القرار (المحاضرة 6)."
+        },
+        {
+          "question": "يقصد بنطاق الإشراف في علم الإدارة عدد المرؤين الذين يشرف عليهم المدير بنجاح وفعالية.",
+          "type": "true_false",
+          "answer": true,
+          "explanation": "صحيح، نطاق الإشراف يحدد عدد المرؤوسين الذين يشرف عليهم المدير وقد يكون نطاقاً ضيقاً أو واسعاً (المحاضرة 4)."
+        },
+        {
+          "question": "يركز المدير على العمليات والمهام والتحكم والمراقبة الرسمية، بينما يركز القائد على الناس والتأثير والتحفيز والإلهام.",
+          "type": "true_false",
+          "answer": true,
+          "explanation": "صحيح، وفقاً للمحاضرة الخامسة والمحاضرة التاسعة، هذا هو الفرق الجوهري في الأسلوب والتركيز بين الإدارة والقيادة."
+        },
+        {
+          "question": "الاتصال الأفقي يتم بين أفراد أو أقسام في مستويات إدارية مختلفة ومتباعدة بهدف فرض الأوامر العادلة.",
+          "type": "true_false",
+          "answer": false,
+          "explanation": "خطأ، الاتصال الأفقي يتم بين أفراد أو أقسام في نفس المستوى الإداري ويهدف إلى التنسيق والتعاون (المحاضرة 7)."
+        },
+        {
+          "question": "أولى مراحل إدارة الأزمات هي الاستجابة الفورية ثم تليها مرحلة الاستعداد ووضع خطط الطوارئ وتدريب الفرق.",
+          "type": "true_false",
+          "answer": false,
+          "explanation": "خطأ، مرحلة الاستعداد (Preparation) تأتي أولاً مسبقاً قبل حدوث الأزمة، ثم التعرف عليها، ثم الاستجابة (Response) لحصر الأضرار (المحاضرة 10)."
+        },
+        {
+          "question": "تعتبر الثقافة التنظيمية والإمكانات المالية والموارد البشرية من عناصر البيئة الخارجية الخاصة للمنظمة.",
+          "type": "true_false",
+          "answer": false,
+          "explanation": "خطأ، الثقافة التنظيمية، الإمكانات المالية، والموارد البشرية هي عوامل تقع داخل المنظمة وتعتبر من عناصر البيئة الداخلية (المحاضرة 2)."
+        },
+        {
+          "question": "تتكون وظيفة التوجيه الإدارية من أربعة عناصر أساسية هي: القيادة، والتحفيز، والاتصال، والإشراف.",
+          "type": "true_false",
+          "answer": true,
+          "explanation": "صحيح، وظيفة التوجيه تشمل قيادة وتحفيز وتوجيه وتسهيل الاتصالات والإشراف على الموظفين (المحاضرة 1)."
+        },
+        {
+          "question": "المركزية تعني تفويض السلطة وصلاحيات اتخاذ القرار للمستويات الإدارية الأدنى لتخفيف العبء عن الإدارة العليا.",
+          "type": "true_false",
+          "answer": false,
+          "explanation": "خطأ، تفويض السلطة للإدارات الأدنى يسمى 'اللامركزية'، أما المركزية فهي تركيز وتجميع السلطة في يد الإدارة العليا فقط (المحاضرة 4)."
+        },
+        {
+          "question": "تقييم 360 درجة يعني قياس أداء الموظف من خلال جمع التغذية الراجعة والملاحظات من كافة الأطراف المحيطة به في بيئة العمل.",
+          "type": "true_false",
+          "answer": true,
+          "explanation": "صحيح، تقييم 360 درجة (360-Degree Feedback) هو أسلوب حديث في إدارة الموارد البشرية يجمع الآراء من الرؤساء والزملاء والمرؤوسين لقياس الأداء الشامل (المحاضرة 8)."
+        },
+        {
+          "question": "يمكن للمؤسسة الإدارية الناجحة أن تكون كفؤة ولكن غير فعالة، أو فعالة ولكن غير كفؤة، والجمع بينهما هو التحدي الحقيقي.",
+          "type": "true_false",
+          "answer": true,
+          "explanation": "صحيح، فقد تنتج الشركة منتجاً بأقل تكلفة (كفاءة) لكن لا يشتريه أحد (غير فعالة)، أو تحقق أهدافها البيعية (فعالية) ولكن بهدر هائل للموارد (غير كفؤة) (المحاضرة 1)."
+        }
+      ]
+    };
+
+    // إعداد العناوين والوصف
+    document.getElementById('quiz-title').innerText = quizData.title;
+    document.getElementById('quiz-desc').innerText = quizData.description;
+
+    const questionsContainer = document.getElementById('questions-container');
+
+    // بناء الأسئلة ديناميكيًا داخل الصفحة
+    quizData.questions.forEach((q, index) => {
+        const questionCard = document.createElement('div');
+        questionCard.className = 'question-card';
+        questionCard.id = `q-card-${index}`;
+
+        const questionHeader = document.createElement('div');
+        questionHeader.className = 'question-header';
+        questionHeader.innerHTML = `<span class="question-number">سؤال ${index + 1}</span><p class="question-text">${q.question}</p>`;
+        questionCard.appendChild(questionHeader);
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'options-container';
+
+        // تحديد الخيارات بناء على نوع السؤال
+        let options = [];
+        if (q.type === 'multiple_choice') {
+            options = q.options;
+        } else if (q.type === 'true_false') {
+            options = ["صواب", "خطأ"];
+        }
+
+        options.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'option-label';
+            
+            // تحويل القيمة الحقيقية للصواب والخطأ لتطابق الإجابة منطقياً
+            let valueToSubmit = option;
+            if (q.type === 'true_false') {
+                valueToSubmit = (option === "صواب") ? true : false;
+            }
+
+            label.innerHTML = `<input type="radio" name="question-${index}" value="${valueToSubmit}"> ${option}`;
+            optionsContainer.appendChild(label);
+        });
+
+        questionCard.appendChild(optionsContainer);
+
+        // إضافة صندوق التفسير والشرح المخفي
+        const explanationBox = document.createElement('div');
+        explanationBox.className = 'explanation-box';
+        explanationBox.id = `explanation-${index}`;
+        explanationBox.innerHTML = `<div class="explanation-title">💡 التفسير الأكاديمي:</div><div>${q.explanation}</div>`;
+        questionCard.appendChild(explanationBox);
+
+        questionsContainer.appendChild(questionCard);
+    });
+
+    // دالة تصحيح وتقييم الامتحان
+    function evaluateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.questions.length;
+
+        quizData.questions.forEach((q, index) => {
+            const selectedRadio = document.querySelector(`input[name="question-${index}"]:checked`);
+            const labels = document.querySelectorAll(`#q-card-${index} .option-label`);
+            
+            let playerAnswer = selectedRadio ? selectedRadio.value : null;
+            
+            // تحويل النص المسترجع لمعادلة القيم المنطقية (Boolean) في أسئلة الصح والخطأ
+            if (q.type === 'true_false' && playerAnswer !== null) {
+                playerAnswer = (playerAnswer === 'true');
+            }
+
+            // فحص وتلوين كل الخيارات
+            labels.forEach(label => {
+                const input = label.querySelector('input');
+                let inputValue = input.value;
+                if (q.type === 'true_false') {
+                    inputValue = (inputValue === 'true');
+                }
+
+                // تمييز الإجابة الصحيحة باللون الأخضر
+                if (inputValue === q.answer) {
+                    label.classList.add('correct');
+                }
+                
+                // إذا أخطأ المستخدم، يتم تمييز خياره الخاطئ باللون الأحمر
+                if (selectedRadio && inputValue === playerAnswer && playerAnswer !== q.answer) {
+                    label.classList.add('incorrect');
+                }
+
+                // قفل الراديو لمنع التعديل بعد ظهور النتيجة
+                input.disabled = true;
+            });
+
+            // حساب عدد الإجابات الصحيحة
+            if (playerAnswer === q.answer) {
+                correctCount++;
+            }
+
+            // إظهار التفسير العلمي لكل سؤال
+            document.getElementById(`explanation-${index}`).style.display = 'block';
+        });
+
+        // حساب الدرجة النهائية من 30 بناءً على وثيقة الامتحان
+        const score = ((correctCount / totalQuestions) * 30).toFixed(1);
+        const percentage = ((correctCount / totalQuestions) * 100).toFixed(1);
+
+        const resultScreen = document.getElementById('result-screen');
+        resultScreen.innerHTML = `نتيجة الاختبار: تم حل ${correctCount} سؤال صحيح من أصل ${totalQuestions}<br>الدرجة المستحقة: ${score} من 30 درجة (${percentage}%)`;
+        resultScreen.style.display = 'block';
+
+        // إخفاء زر الإرسال بعد الضغط عليه
+        document.getElementById('submit-button').style.display = 'none';
+
+        // الصعود لأعلى الصفحة بسلاسة لرؤية النتيجة الكلية
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
+
+```
